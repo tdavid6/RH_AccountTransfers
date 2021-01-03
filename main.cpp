@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "STL_includes.h"
-#include "Folder.h"
+#include "File.h"
 
 bool import(const std::string &file, std::vector<std::string> &data)
 {
@@ -96,12 +96,12 @@ unsigned int count(const std::string &str, const std::string &toCount, const uns
 
 int main(int argc, char** argv)
 {
-	std::string str1 = "ahello";
-	std::string str2 = "hell";
-	if (containsString(str2, str1))
-		std::cout << "worked\n";
-	else
-		std::cout << "didn't work\n";
+	//std::string str1 = "ahello";
+	//std::string str2 = "hell";
+	//if (containsString(str2, str1))
+	//	std::cout << "worked\n";
+	//else
+	//	std::cout << "didn't work\n";
 
 
 	if (argc == 1)
@@ -111,26 +111,22 @@ int main(int argc, char** argv)
 		std::cin.get();
 		return 0;
 	}
-	Folder folder;
+	
 	if (argc == 2)
 	{
-		folder.setPath(argv[1]);
-		std::vector<std::string> inputData;
-		import(folder.getPath(), inputData); //TODO: change to wide strings to read special characters
-		for (auto & data : inputData)
+		std::vector<std::string> searchTerms = { "Amount", "$", "Bank Account", "Checking", "Initiated", "Completed", "Status", "Canceled", "Deposit", "Withdrawal"};
+
+		File accountFile(argv[1]);
+		accountFile.import();
+
+		for (auto & term : searchTerms)
 		{
-			std::cout << data << "\n";
+			std::cout << term << ": " << accountFile.count(term) << std::endl;
 		}
-		std::cout << std::endl;
-		//add(allData, inputData);
-		//inputData.clear(); //was needed when looped through multiple input files and aggregated all data
+		
+		//accountFile.printAll();
 	}
-	//std::vector<std::string> allData;
 	
-	/*if (exportAll(allData))
-	{
-		std::cout << "The data was successfully merged" << std::endl;
-	}*/
 	std::cin.get();
 	return 0;
 }

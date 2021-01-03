@@ -12,14 +12,22 @@ public:
 	~File();
 
 private:
-	std::string path;
+	std::string m_path;
+	std::vector<std::string> m_inputData;
 
 public:
 	void setPath(const std::string &str);
 	//const std::string* getPath();
 	const std::string& getPath() const;
 
-	//bool buildFiles();
+	bool import();
+	bool import(std::vector<std::string> &data);
+	bool import(const std::string &fileName);
+	bool import(std::vector<std::string> &data, const std::string &fileName);
+
+	bool printAll();
+
+	unsigned int count(const std::string &str);
 };
 
 #endif // !"FILE_H"
