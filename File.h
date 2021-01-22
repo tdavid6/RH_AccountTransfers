@@ -4,6 +4,8 @@
 
 #include "STL_includes.h"
 
+#include "Transaction.h"
+
 class File
 {
 public:
@@ -15,6 +17,8 @@ private:
 	std::string m_path;
 	std::vector<std::string> m_inputData;
 
+	std::vector<Transaction> m_transactions;
+
 public:
 	void setPath(const std::string &str);
 	//const std::string* getPath();
@@ -24,6 +28,8 @@ public:
 	bool import(std::vector<std::string> &data);
 	bool import(const std::string &fileName);
 	bool import(std::vector<std::string> &data, const std::string &fileName);
+
+	bool parseTransactions();
 
 	bool printAll();
 

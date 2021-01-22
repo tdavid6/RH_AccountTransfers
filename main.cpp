@@ -1,7 +1,9 @@
 #include <iostream>
 
 #include "STL_includes.h"
+
 #include "File.h"
+#include "Transaction.h"
 
 bool import(const std::string &file, std::vector<std::string> &data)
 {
@@ -103,21 +105,40 @@ int main(int argc, char** argv)
 	//else
 	//	std::cout << "didn't work\n";
 
-
+	File accountFile;
 	if (argc == 1)
 	{
 		//Enter file name
+		std::string fileNamed = "";
 		std::cout << "Enter file name:" << std::endl;
-		std::cin.get();
-		return 0;
+		//accountFile.setPath("F:/Code/Projects/c++/RH_AccountTransfers/Debug/AccountTransfers_Signed.txt");
+		//std::cin.get();
+		
 	}
 	
 	if (argc == 2)
 	{
+		accountFile.setPath(argv[1]);
+	}
 		std::vector<std::string> searchTerms = { "Amount", "$", "Bank Account", "Checking", "Initiated", "Completed", "Status", "Canceled", "Deposit", "Withdrawal"};
 
-		File accountFile(argv[1]);
 		accountFile.import();
+
+		//std::vector<Transaction> transactions;
+
+		if (accountFile.count("Completed") + accountFile.count("Canceled") != accountFile.count("Initiated"))
+		{
+			std::cout << "There are missing data\n";
+		}
+		else
+			std::cout << "Looks okay mathwiseeeeGamegie\n";
+
+		//accountFile.parseTransactions();
+
+		for (unsigned int sacDex = 0; sacDex < accountFile.count("Amount"); ++sacDex)
+		{
+			//transactions.emplace_back(Transaction());
+		}
 
 		for (auto & term : searchTerms)
 		{
@@ -125,7 +146,7 @@ int main(int argc, char** argv)
 		}
 		
 		//accountFile.printAll();
-	}
+	
 	
 	std::cin.get();
 	return 0;
