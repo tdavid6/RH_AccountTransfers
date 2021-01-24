@@ -3,8 +3,9 @@
 #define FILE_H
 
 #include "STL_includes.h"
-
 #include "Transaction.h"
+
+
 
 class File
 {
@@ -14,10 +15,14 @@ public:
 	~File();
 
 private:
+
+	
 	std::string m_path;
 	std::vector<std::string> m_inputData;
 
 	std::vector<Transaction> m_transactions;
+
+	bool extrapTrans(const std::vector<std::string> &data);
 
 public:
 	void setPath(const std::string &str);
@@ -30,6 +35,8 @@ public:
 	bool import(std::vector<std::string> &data, const std::string &fileName);
 
 	bool parseTransactions();
+
+	bool comprehensiveData();
 
 	bool printAll();
 

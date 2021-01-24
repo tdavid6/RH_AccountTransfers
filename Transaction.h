@@ -5,10 +5,7 @@
 #include "STL_includes.h"
 
 //const unsigned int ST
-const std::string STATUS = { "Canceled", "Completed" };
-const std::string TYPE = { "Deposit", "Withdrawal" };
-enum status { CANCELED, COMPLETED };
-enum type { DEPOSIT, WITHDRAWAL}; // * (-1)
+
 
 class Transaction
 {
@@ -18,10 +15,14 @@ public:
 	~Transaction();
 
 private:
-	double m_Amount;
+
+	double m_Amount = 0;
 	std::string m_date;
 	bool m_status; //bool completed or cancelled
 	bool m_type; //bool Deposit or Withdrawal
+
+private:
+	unsigned int findIndex(const std::string &str, std::string *arr);
 
 public:
 	//bool setAmount(const std::string &amt)

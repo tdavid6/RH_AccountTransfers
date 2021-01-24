@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+enum class SEARCH_TERMS { AMOUNT, DOLLAR, BANK_ACCOUNT, CHECKING, INITIATED, COMPLETED, STATUS, CANCELED, DEPOSIT, WITHDRAWAL, SEARCH_TERMS_COUNT };
+const static std::string searchTerms[static_cast<unsigned int>(SEARCH_TERMS::SEARCH_TERMS_COUNT)] = { "Amount", "$", "Bank Account", "Checking", "Initiated", "Completed", "Status", "Canceled", "Deposit", "Withdrawal" };
+
 File::File()
 {
 
@@ -38,13 +41,12 @@ bool File::import(std::vector<std::string> &data, const std::string &fileName)
 	std::ifstream input;
 	input.open(fileName);
 
-	std::string temp = "";
-	//std::vector<std::string> data;
 	if (input.is_open())
 	{
+		std::string temp = "";
 		while (std::getline(input, temp))
 		{
-			data.push_back(temp); //TODO: change to wide strings to read special characters
+			data.emplace_back(temp); //TODO: change to wide strings to read special characters
 			temp = "";
 		}
 		input.close();
@@ -79,6 +81,54 @@ unsigned int File::count(const std::string &str)
 	//}
 	return count;
 }
+
+bool File::extrapTrans(const std::vector<std::string> &data)
+{
+	unsigned int dataSize = data.size();
+
+	std::string t_Amount = "";
+	std::string t_Date = "";
+	std::string t_Status = "";
+	std::string t_Type = "";
+
+	for (unsigned int dataIndex = 0; dataIndex < dataSize; ++dataIndex)
+	{
+		if (data[dataIndex] == searchTerms[static_cast<unsigned int>(SEARCH_TERMS::AMOUNT)]
+			&& (dataIndex - 1 >= 0 && dataIndex + 1 < dataSize))
+		{
+				t_Amount = data[dataIndex + 1];
+				t_Type = data[dataIndex - 1];
+		}
+
+		if (data[dataIndex] == searchTerms[static_cast<unsigned int>(SEARCH_TERMS::INITIATED)])
+		{
+			if (dataIndex - 1 > 0 && dataIndex + 1 < dataSize)
+			{
+				t_Date = data[dataIndex + 1];
+			}
+		}
+
+		if (data[dataIndex] == searchTerms[static_cast<unsigned int>(SEARCH_TERMS::STATUS)])
+		{
+			if (dataIndex - 1 > 0 && dataIndex + 1 < dataSize)
+			{
+				t_Status = data[dataIndex + 1];
+			}
+			
+		}
+
+		if (t_Amount != "" && t_Date != "" && t_Status != "" && t_Type != "")
+		{
+			m_transactions.push_back(Transaction(t_Type, t_Amount, t_Date, t_Status));
+			t_Amount = "";
+			t_Date = "";
+			t_Status = "";
+			t_Type = "";
+		}
+	}
+	return true;
+}
+
 
 bool File::parseTransactions()
 {
@@ -128,10 +178,36 @@ bool File::parseTransactions()
 			t_Date = "";
 			t_Status = "";
 			t_Type = "";
-		}		
+		}
 	}
 
 	return true;
+}
+
+bool File::comprehensiveData()
+{
+	unsigned int xfers = count(searchTerms[static_cast<unsigned int>(SEARCH_TERMS::INITIATED)]);
+	unsigned int comp = count(searchTerms[static_cast<unsigned int>(SEARCH_TERMS::COMPLETED)]);
+	unsigned int canc = count(searchTerms[static_cast<unsigned int>(SEARCH_TERMS::CANCELED)]);
+
+	if (comp + canc != xfers)
+	{
+		std::cout << "There are missing data\n";
+		std::cout << searchTerms[static_cast<unsigned int>(SEARCH_TERMS::INITIATED)] << " " << xfers << "\n";
+		std::cout << searchTerms[static_cast<unsigned int>(SEARCH_TERMS::COMPLETED)] << " " << comp << "\n";
+		std::cout << searchTerms[static_cast<unsigned int>(SEARCH_TERMS::CANCELED)] << " " << canc << "\n";
+
+	}
+	else
+	{
+		if (extrapTrans(m_inputData))
+		{
+			if (xfers == m_transactions.size())
+				return true;
+		}
+	}
+
+	return false;
 }
 
 bool File::printAll()
